@@ -153,7 +153,7 @@ where
     send: Mutex<M, S>,
     recv_buf: RB,
     send_buf: SB,
-    rand: fn(&mut [u8]),
+    rand: impl FnMut(&mut [u8]),
     broadcast_signal: &'a Signal<M, ()>,
     wait_readable: bool,
 }
@@ -175,7 +175,7 @@ where
         send: S,
         recv_buf: RB,
         send_buf: SB,
-        rand: fn(&mut [u8]),
+        rand: impl FnMut(&mut [u8]),
         broadcast_signal: &'a Signal<M, ()>,
     ) -> Self {
         Self {
