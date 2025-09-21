@@ -146,7 +146,7 @@ where
 pub struct Mdns<'a, M, R, S, RB, SB, W>
 where
     M: RawMutex,
-    W: FnMut(&mut [u8])
+    W: Fn(&mut [u8])
 {
     ipv4_interface: Option<Ipv4Addr>,
     ipv6_interface: Option<u32>,
@@ -166,7 +166,7 @@ where
     S: UdpSend<Error = R::Error>,
     RB: BufferAccess<[u8]>,
     SB: BufferAccess<[u8]>,
-    W: FnMut(&mut [u8])
+    W: Fn(&mut [u8])
 {
     /// Creates a new mDNS service with the provided handler, interfaces, and UDP receiver and sender.
     #[allow(clippy::too_many_arguments)]
@@ -256,7 +256,7 @@ where
     }
 
     async fn broadcast<T>(
-        &mut self,
+        &self,
         handler: &blocking_mutex::Mutex<M, RefCell<T>>,
     ) -> Result<(), MdnsIoError<S::Error>>
     where
@@ -414,7 +414,7 @@ where
         Ok(())
     }
 
-    async fn delay(&mut self) {
+    async fn delay(&self) {
         let mut b = [0];
         (self.rand)(&mut b);
 
