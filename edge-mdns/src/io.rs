@@ -256,7 +256,7 @@ where
     }
 
     async fn broadcast<T>(
-        &self,
+        &mut self,
         handler: &blocking_mutex::Mutex<M, RefCell<T>>,
     ) -> Result<(), MdnsIoError<S::Error>>
     where
