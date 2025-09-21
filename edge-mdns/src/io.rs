@@ -159,7 +159,7 @@ where
     wait_readable: bool,
 }
 
-impl<'a, M, R, S, RB, SB> Mdns<'a, M, R, S, RB, SB, W>
+impl<'a, M, R, S, RB, SB,W> Mdns<'a, M, R, S, RB, SB, W>
 where
     M: RawMutex,
     R: UdpReceive + Readable,
