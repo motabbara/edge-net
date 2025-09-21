@@ -414,7 +414,7 @@ where
         Ok(())
     }
 
-    async fn delay(&self) {
+    async fn delay(&mut self) {
         let mut b = [0];
         (self.rand)(&mut b);
 
