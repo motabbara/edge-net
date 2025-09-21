@@ -143,9 +143,10 @@ where
 /// The handler is expected to be a type that implements the `MdnsHandler` trait, which
 /// allows it to handle mDNS queries and generate responses, as well as to handle mDNS
 /// responses to queries which we might have issues using the `query` method.
-pub struct Mdns<'a, M, R, S, RB, SB>
+pub struct Mdns<'a, M, R, S, RB, SB, W>
 where
     M: RawMutex,
+    W: FnMut(&mut [u8])
 {
     ipv4_interface: Option<Ipv4Addr>,
     ipv6_interface: Option<u32>,
@@ -153,18 +154,19 @@ where
     send: Mutex<M, S>,
     recv_buf: RB,
     send_buf: SB,
-    rand: impl FnMut(&mut [u8]),
+    rand: W,
     broadcast_signal: &'a Signal<M, ()>,
     wait_readable: bool,
 }
 
-impl<'a, M, R, S, RB, SB> Mdns<'a, M, R, S, RB, SB>
+impl<'a, M, R, S, RB, SB> Mdns<'a, M, R, S, RB, SB, W>
 where
     M: RawMutex,
     R: UdpReceive + Readable,
     S: UdpSend<Error = R::Error>,
     RB: BufferAccess<[u8]>,
     SB: BufferAccess<[u8]>,
+    W: FnMut(&mut [u8])
 {
     /// Creates a new mDNS service with the provided handler, interfaces, and UDP receiver and sender.
     #[allow(clippy::too_many_arguments)]
@@ -175,7 +177,7 @@ where
         send: S,
         recv_buf: RB,
         send_buf: SB,
-        rand: impl FnMut(&mut [u8]),
+        rand: W,
         broadcast_signal: &'a Signal<M, ()>,
     ) -> Self {
         Self {
